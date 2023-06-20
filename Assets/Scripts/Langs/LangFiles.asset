@@ -15,3 +15,7 @@ MonoBehaviour:
   Supported:
   - lang: 0
     LangFile: {fileID: 4900000, guid: 3e05cf37951188046aa0a25378d0be62, type: 3}
+  - lang: 1
+    LangFile: {fileID: 4900000, guid: 3b0f3b6796f1a704aa76289c1ba7a8b1, type: 3}
+  - lang: 2
+    LangFile: {fileID: 4900000, guid: 98f13d2290a7dbb40a52c4268d38ab49, type: 3}

@@ -1,5 +1,9 @@
-[TEST],This is a Test 1
-[TEST1],This is a Test 2
-[TEST2],This is a Test 3
-[TEST3],This is a Test 4
-[NAME],Battle of Bangal
+[TEST],This is a Test 1,This is a Test 1,This is a Test 1
+[START],Start,,
+[OPTIONS],Options,,
+[EXIT],Exit,,
+[RESTART],Restart,,
+[LANG],Language,Idioma,Sprache
+[NAME],Battle of Bangal,Batalla de Bangal,Schlacht von Bangal
+[GAMEJAM],Game Jam,Atasco de juegos,Spiel Konfitüre
+[MACHINE TRANSLATED],Languages are machine translated,Los idiomas se traducen automáticamente,Sprachen werden maschinell übersetzt

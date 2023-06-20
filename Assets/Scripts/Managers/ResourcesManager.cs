@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum TechTier { Tier0,Tier1,Tier2,Tier3}
 public class ResourcesManager : MonoService<ResourcesManager>
 {
 

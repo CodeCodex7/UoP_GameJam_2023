@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 [System.Serializable]
@@ -9,6 +10,7 @@ public class LanguageManager : MonoService<LanguageManager>
     public SuppportedLangs CurrentLang = SuppportedLangs.En;
     public Dictionary<string, Dictionary<string, string>> LangDict = new Dictionary<string, Dictionary<string, string>>();
 
+    public Action LanguageChange;
 
     private void Awake()
     {
@@ -19,6 +21,19 @@ public class LanguageManager : MonoService<LanguageManager>
     private void Start()
     {
         
+    }
+
+    public void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.L))
+        {
+            ChangeLang();
+        }
+    }
+
+    public void ChangeLang()
+    {
+        LanguageChange.Invoke();
     }
 
     private void OnDestroy()
