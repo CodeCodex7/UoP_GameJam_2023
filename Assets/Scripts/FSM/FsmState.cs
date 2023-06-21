@@ -7,7 +7,7 @@ public class FsmState : ScriptableObject, IFsmState
     public FSM FsmEngine;
     public GameObject Object;
 
-    public FsmState NextState;
+    public List<FsmState> NextStates = new List<FsmState>();
     public FsmState EnteredState;
 
     public virtual void InState()

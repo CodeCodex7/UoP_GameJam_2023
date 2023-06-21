@@ -22,17 +22,16 @@ public class CubeController : FSM
 
     public void Setup()
     {
-        CubeLeftRight C1 = new CubeLeftRight(this.gameObject);
-        CubeUpDown C2 = new CubeUpDown(this.gameObject);
+        //CubeLeftRight C1 = new CubeLeftRight(this.gameObject);
+        //CubeUpDown C2 = new CubeUpDown(this.gameObject);
 
-        C1.NextState = C2;
-        C2.NextState = C1;
+        //C1.NextStates = C2;
+        //C2.NextStates = C1;
 
-        fsmStates.Add(C1);
-        fsmStates.Add(C2);
+        //fsmStates.Add(C1);
+        //fsmStates.Add(C2);
 
-
-        CurrentStates.Add(C1);
+        //CurrentStates.Add(C1);
 
     }
 

@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
+using Unity.VisualScripting;
+using TMPro;
 
 public class FSM : MonoBehaviour
 {
@@ -22,6 +25,7 @@ public class FSM : MonoBehaviour
         }
     }
 
+
     private void MoveState(FsmState CState,FsmState NState)
     {
         FsmState NextState = fsmStates.Find(delegate (FsmState S) { return S == NState; });
@@ -42,7 +46,53 @@ public class FSM : MonoBehaviour
 
     public void Next()
     {
-        MoveState(CurrentStates[0], CurrentStates[0].NextState);
+        MoveState(CurrentStates[0], CurrentStates[0].NextStates[0]);
+    }
+
+    public void NextState<T> ()
+    {
+        Type typeParameterType = typeof(T);
+
+        FsmState state = fsmStates.Find(delegate (FsmState S) { if (S.GetType() == typeParameterType) { return S; } else { return false; }; ; });
+
+        try
+        {
+            //state = fsmStates.Find((x) => x.Equals(typeParameterType));
+            MoveState(state, state.NextStates[0]);
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+        }
+        
+    }
+
+    public void AddState<T>()
+    {
+        Type typeParameterType = typeof(T);
+
+        
+        try
+        {
+            //state = fsmStates.Find((x) => x == (typeParameterType));
+            FsmState state = fsmStates.Find(delegate (FsmState S) { if (S.GetType() == typeParameterType) { return S; } else { return false; }; ; });
+            CurrentStates.Add(state);
+            CurrentStates.Find(delegate (FsmState S) { if (S.GetType() == typeParameterType) { return S; } else { return false; }; ; }).OnEnter();
+
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+        }
+
+    }
+
+    public void RemoveStates(params FsmState[] state )
+    {
+        for (int i = 0; i < state.Length; i++)
+        {
+            CurrentStates.Remove(state[i]);
+        }
     }
 
 }

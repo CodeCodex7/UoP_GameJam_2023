@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class TerrainGenerator : MonoService<TerrainGenerator>
 {
@@ -8,7 +10,7 @@ public class TerrainGenerator : MonoService<TerrainGenerator>
     public Dictionary<string, TerrainData> TerrainStorage = new Dictionary<string, TerrainData>();
 
     public GameObject TerrainBlock;
-
+    public GameObject TestAI;
     private void Awake()
     {
         RegisterService();
@@ -30,25 +32,19 @@ public class TerrainGenerator : MonoService<TerrainGenerator>
 
         var BaseTerrain = Perlin.GenerateNoiseMap(MapSize);
         var River = Perlin.GenerateNoiseMap(MapSize);
-        var Hills = Perlin.GenerateNoiseMap(MapSize);
-
-        //for (int i = 0; i < BaseTerrain.GetLength(0); i++)
-        //{
-        //    for (int b = 0; b < BaseTerrain.GetLength(1); b++)
-        //    {
-        //        if(River[i,b] < 0.3f && River[i, b] < BaseTerrain[i,b])
-        //        {
-        //            BaseTerrain[i, b] = River[i, b];
-        //        }
-        //    }
-        //}
-
+        
         var GridService = Services.Resolve<GridController>();
+        
         GridService.CreateGrid<PathfindingInfo>(MapSize, "Battle");
+        GridService.CreateGrid<bool>(MapSize, "Col");
+        GridService.CreateGrid<int>(MapSize, "Bol");
+        GridService.CreateGrid<UnitMapData>(MapSize, "BattleInfo");
 
         var GridArray = GridService.GetFromStorage<GridCell<PathfindingInfo>[,]>("Battle");
-
-
+        var ColArray = GridService.GetFromStorage<GridCell<bool>[,]>("Col");
+        var BattleArea = GridService.GetFromStorage<GridCell<PathfindingInfo>[,]>("BattleInfo");
+        
+        //Debug.Log(BattleArea[0, 0].Contents.Occuipied);
 
         for (int i = 0; i < MapSize.x; i++)
         {
@@ -57,16 +53,29 @@ public class TerrainGenerator : MonoService<TerrainGenerator>
                 
                 var A = Instantiate(TerrainBlock, new Vector3(i, BaseTerrain[i, b] * 5f, b), Quaternion.identity,Data.RootObject.transform);
 
+                A.GetComponentInChildren<TextMeshPro>().text = string.Format("{0} {1}", i, b);
+
+                GridArray[i, b].Contents.GridPostion = new Vector2Int(i, b);
                 GridArray[i, b].Contents.WorldPostion = A.transform.position;
-                GridArray[i, b].Contents.Cost = 1;
+
+                if(BaseTerrain[i, b] <0.2f)
+                {
+                    GridArray[i, b].Contents.Cost = 255;
+                }
+                else if(BaseTerrain[i, b] > 0.5f)
+                {
+                    GridArray[i, b].Contents.Cost = 3;
+                }
+                else
+                {
+                    GridArray[i, b].Contents.Cost = 1;
+                }
                 GridArray[i, b].Contents.LinkedObject = A;
-                A.GetComponent<Renderer>().material.color = TerrainColor(BaseTerrain[i, b]);
+                A.GetComponent<Renderer>().material.color = TerrainColor(BaseTerrain[i, b]); //TerrainCost(GridArray[i, b].Contents.Cost);//TerrainColor(BaseTerrain[i, b]);
                 Data.TerrainBlocks.Add(A);
                 A.name = string.Format("Block: X {0} | y{1}", i, b);
             }
         }
-
-        GridArray[50, 50].Contents.LinkedObject.GetComponent<Renderer>().material.color = Color.red;
 
     }
 
@@ -124,16 +133,53 @@ public class TerrainGenerator : MonoService<TerrainGenerator>
 
     }
 
-    // Start is called before the first frame update
+    Color TerrainCost(int H)
+    {
+        switch (H)
+        {
+            case 1:
+                return Color.green;
+
+            case 3:
+                return Color.white;
+
+            case 255:
+                return Color.blue;
+
+                default: return Color.black;
+
+        }
+    }
+  
     void Start()
     {
         GenerateTerrain(Vector3.zero, new Vector2Int(100, 100));
-        //StartCoroutine(TestFlood());
+
+        Services.Resolve<FlowField>().GenerateIntergationField(new Vector2Int(25, 25));
+
+        for (int i = 0; i < 1; i++)
+        {
+            var AI = Instantiate(TestAI);
+            //AI.GetComponent<TestFlowAI>().StartCoroutine(AI.GetComponent<BasicAI>().FreeSeek("Battle", new Vector2Int(Random.Range(0, 99), Random.Range(0, 99))));
+            //AI.GetComponent<TestFlowAI>().StartCoroutine(AI.GetComponent<BasicAI>().FreeSeek("Battle", new Vector2Int(Random.Range(0, 99), Random.Range(0, 99))));
+            AI.GetComponent<BasicAI>();
+        }
+      
+        //StartCoroutine(FlowChange());
+
+    }
 
 
-        Services.Resolve<FlowField>().GenerateFlowField();
+    IEnumerator FlowChange()
+    {
 
-        //StartCoroutine(AnimatedGenerateTerrain(Vector3.zero, new Vector2Int(100, 100)));
+        while(true) 
+        {
+            Services.Resolve<FlowField>().ResetBest();
+            Services.Resolve<FlowField>().GenerateIntergationField(new Vector2Int(Random.Range(0,49),Random.Range(0,49)));
+            yield return new WaitForSeconds(10f);
+        }
+
     }
 
 
@@ -148,7 +194,7 @@ public class TerrainGenerator : MonoService<TerrainGenerator>
         List<GridCell<PathfindingInfo>> Search = new List<GridCell<PathfindingInfo>>();
         List<GridCell<PathfindingInfo>> Done = new List<GridCell<PathfindingInfo>>();
         Search.Add(GridArray[50, 50]);
-        Search[0].Contents.Cost = 0;
+        Search[0].Contents.Weight = 0;
         yield return null;
 
 
@@ -178,7 +224,7 @@ public class TerrainGenerator : MonoService<TerrainGenerator>
                 {
                     if (!Search.Contains(Target.NeighboursList[i]))
                     {
-                        Target.NeighboursList[i].Contents.Cost = Target.Contents.Cost+1;
+                        Target.NeighboursList[i].Contents.Weight = Target.Contents.Weight+1;
                         Search.Add(Target.NeighboursList[i]);
                     }
                 }
@@ -203,6 +249,17 @@ public class TerrainGenerator : MonoService<TerrainGenerator>
 
         public List<GameObject> TerrainBlocks = new List<GameObject>();
 
+    }
+
+    public class MapData
+    {
+        public BasicUnit Unit;
+        public bool Occuipied;
+
+        public MapData( ) 
+        {
+            Occuipied = false;
+        }
     }
 
 }
