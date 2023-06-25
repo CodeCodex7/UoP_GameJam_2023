@@ -45,7 +45,7 @@ public class PerlinGenerator : MonoService<PerlinGenerator>
     void Test()
     {
 
-        var grid = GenerateNoiseMap(new Vector2Int(100, 100));
+        var grid = GenerateNoiseMap(new Vector2Int(Services.Resolve<GameManager>().MapSize.x, Services.Resolve<GameManager>().MapSize.y));
 
 
         for (int i = 0; i < grid.GetLength(0); i++)

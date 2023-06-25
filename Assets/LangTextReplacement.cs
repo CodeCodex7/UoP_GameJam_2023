@@ -59,11 +59,11 @@ public class LangTextReplacement : MonoBehaviour
 
             if (w[0] == '[' && w[w.Length-1] == ']')
             {
-                ReplacmentText += string.Format("{0}", Services.Resolve<LanguageManager>().GetWord(w));
+                ReplacmentText += string.Format("{0} ", Services.Resolve<LanguageManager>().GetWord(w));
             }
             else
             {
-                ReplacmentText += string.Format("{0}", w);
+                ReplacmentText += string.Format("{0} ", w);
             }
         }
 

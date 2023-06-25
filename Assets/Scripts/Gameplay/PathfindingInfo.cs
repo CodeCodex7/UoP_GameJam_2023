@@ -15,7 +15,7 @@ public class PathfindingInfo
     public PathfindingInfo()
     {
         Weight = 1;
-        Cost = 1;
+        Cost = 0;
         BestCost = 255;
     }
 

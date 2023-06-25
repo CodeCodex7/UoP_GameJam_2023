@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class GameManager : MonoService<GameManager> 
 {
-
-
+    public Vector2Int MapSize = new Vector2Int(50, 50);
+    public int Unitlimit = 20;
     // We must register the service in Awake or Start
     private void Awake()
     {
@@ -19,13 +19,31 @@ public class GameManager : MonoService<GameManager>
         UnregisterService();// handles Un-registering the service
     }
 
-
-    private void Reset()
+    public void TimeSet(float I)
     {
-        
+        Time.timeScale = I;
     }
 
-    void StartGame()
+    public void ChangeMapSize(int I)
+    {
+        MapSize = new Vector2Int(100, 100);
+    }
+
+    public void NoUnitLimit()
+    {
+        Unitlimit = 1000;
+    }
+
+    public void GameReset()
+    {
+        Services.Resolve<GridController>().Clear();
+        Services.Resolve<TerrainGenerator>().DestoryTerrain();
+        Services.Resolve<BattleController>().Clear();
+
+
+    }
+
+    public void StartGame()
     {
         
     }

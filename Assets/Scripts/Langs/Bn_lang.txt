@@ -1,0 +1,24 @@
+[TEST],
+[START],Śuru karuna
+[OPTIONS],Apaśana
+[EXIT],Prasthāna karuna
+[RESTART],Ābāra śuru
+[LANG],Bhāṣā mēśina anubāda karā haẏa
+[NAME],Bānlāra yud'dha
+[GAMEJAM],Khēlā jyāma
+[MACHINETRANSLATED],Bhāṣā mēśina anubāda karā haẏa
+[AUTOBATTLE],ato juddho
+[MONEY:],pound
+[BLUE_ALIVE],neel jibonto
+[RED_ALIVE],lal jibito
+[FIGHT],uddho shuru korun
+[SOILDER],yoddha
+[GAMESETTINGS],juddho settings
+[ARCHER],archer
+[GAINT],Riese
+[LOSE],here yawa
+[WIN],jetar
+[GAMEINFO],unit yoga karte botamguli byabahar kare juddhe yawar jonno nirbachito uniting sorboshesh jukto uniting apasaran karate aposaron botamati byabohar karun. tomara lal dal.
+[AI_WIN],ai jiteche
+[PLAYER_WIN],kheloyad joy
+[REMOVE],unit aposaron karun

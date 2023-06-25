@@ -1,5 +1,24 @@
 [TEST],This is a Test 1
-[TEST1],This is a Test 2
-[TEST2],This is a Test 3
-[TEST3],This is a Test 4
+[START],Anfangen
+[OPTIONS],Optionen
+[EXIT],Ausgang
+[RESTART],Neustarten
+[LANG],Sprache
 [NAME],Schlacht von Bangal
+[GAMEJAM],Spiel Konfitüre
+[MACHINETRANSLATED],Sprachen werden maschinell übersetzt
+[AUTOBATTLE],Automatischer Kampf
+[MONEY:],Pfund
+[BLUE_ALIVE],Blau lebendig
+[RED_ALIVE],Rot lebendig
+[FIGHT],Beginne den Kampf
+[SOILDER],Kämpfer
+[GAMESETTINGS],juddho settings
+[ARCHER],Bogenschütze
+[GAINT],Riese
+[LOSE],verlieren
+[WIN],gewinnen
+[GAMEINFO],Ausgewählte Einheit, mit der du in den Kampf ziehen möchtest, benutze die Schaltflächen, um Einheiten hinzuzufügen, benutze die Entfernen-Taste, um die zuletzt hinzugefügte Einheit zu entfernen. Ihr seid ein rotes Team.
+[AI_WIN],KI gewinnt
+[PLAYER_WIN],Spieler-Sieg
+[REMOVE],Gerät entfernen

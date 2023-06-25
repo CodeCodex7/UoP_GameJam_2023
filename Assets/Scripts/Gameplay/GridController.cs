@@ -2,9 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-
-
-
+using Unity.VisualScripting;
 
 public class GridController : MonoService<GridController>
 {
@@ -27,11 +25,53 @@ public class GridController : MonoService<GridController>
 
     }
 
+    public bool GridExists(string Key)
+    {
+        if(GridStorage.ContainsKey(Key))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public T GetFromStorage<T>(string Key) where T : class
     {
         return GridStorage[Key] as T;
     }
 
+
+    public void CopyGrid<T>(string Key,string NewKey) where T : new()
+    {
+
+        var P = GetFromStorage<GridCell<T>[,]>(Key);
+
+        GridCell<T>[,] cells = new GridCell<T>[P.GetLength(0), P.GetLength(1)];
+
+
+
+        for (int i = 0; i < P.GetLength(0); i++)
+        {
+            for (int b = 0; b < P.GetLength(0); b++)
+            {
+                cells[i, b] = new GridCell<T>(new T());
+            }
+        }
+
+        for (int i = 0; i < P.GetLength(0); i++)
+        {
+            for (int b = 0; b < P.GetLength(0); b++)
+            {
+                cells[i, b] = P[i, b]; ;
+            }
+        }
+
+
+
+        GridStorage.Add(NewKey, cells);
+    }
 
     public void CreateGrid<T>(Vector2Int Size, string Key) where T : new()
     {
@@ -45,6 +85,7 @@ public class GridController : MonoService<GridController>
                 cells[i, b] = new GridCell<T>(new T());
             }
         }
+
 
         LinkCells<T>(cells);
         GridStorage.Add(Key, cells);
@@ -108,6 +149,14 @@ public class GridController : MonoService<GridController>
 
     }
 
+    public void Clear()
+    {
+        //foreach(KeyValuePair<String,object> valuePair in GridStorage)
+        //{
+        //    valuePair.;
+        //}
+        GridStorage.Clear();
+    }
 
     void Test()
     {

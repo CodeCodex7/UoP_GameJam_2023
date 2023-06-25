@@ -87,54 +87,40 @@ public class FlowField : MonoService<FlowField>
 
     }
 
-    public void GenerateCostField(Vector2Int StartPos)
+    public void GenerateCostField(Vector2Int TargetPos,string Key)
     {
-   
+        ResetBest(Key);
+
         var GC = Services.Resolve<GridController>();
 
-        var GridArray = GC.GetFromStorage<GridCell<PathfindingInfo>[,]>("Battle");
+        var GridArray = GC.GetFromStorage<GridCell<PathfindingInfo>[,]>(Key);
+        var MasterGridArray = GC.GetFromStorage<GridCell<PathfindingInfo>[,]>("Battle");
+        var BattleInfo = GC.GetFromStorage<GridCell<UnitMapData>[,]>("BattleInfo");
+       
 
-        Queue<GridCell<PathfindingInfo>> Open = new Queue<GridCell<PathfindingInfo>>();
-        HashSet<GridCell<PathfindingInfo>> Closed = new HashSet<GridCell<PathfindingInfo>>();
-
-        GridArray[StartPos.x, StartPos.y].Contents.BestCost = 0;
-        GridArray[StartPos.x, StartPos.y].Contents.LinkedObject.GetComponent<Renderer>().material.color = Color.red;
-        Open.Enqueue(GridArray[StartPos.x, StartPos.y]);
-
-        float HCost = 0;
-        GridCell<PathfindingInfo> Target;
-
-        while (Open.Count != 0)
+        for (int i = 0; i < GridArray.GetLength(0); i++)
         {
-
-            Target = Open.Dequeue();
-            Target.Contents.CostIncresse(1);
-            //Target.Contents.LinkedObject.name = string.Format("{0} Cost is {1}", Target.Contents.LinkedObject.name, Target.Contents.Cost);
-            Target.Contents.LinkedObject.GetComponentInChildren<TextMeshPro>().text = Target.Contents.Cost.ToString();
-            //Target.Contents.LinkedObject.GetComponent<Renderer>().material.color = Color.red;
-
-            for (int i = 0; i < Target.DirectionalNeighboursList.Count; i++)
-            {
-                if (!Closed.Contains(Target.DirectionalNeighboursList[i]))
+            for (int b = 0; b < GridArray.GetLength(1); b++)
+            {              
+                if (BattleInfo[i, b].Contents.Taken)
                 {
-                    if (!Open.Contains(Target.DirectionalNeighboursList[i]))
-                    {                      
-                        //Target.DirectionalNeighboursList[i].Contents.CostIncresse(1);
-                        Open.Enqueue(Target.DirectionalNeighboursList[i]);
-                    };
+                    //GridArray[i, b].Contents.Cost = 255;
+                    GridArray[i, b].Contents.Cost = MasterGridArray[i, b].Contents.Cost;
                 }
-            }
+                else
+                {
+                    GridArray[i, b].Contents.Cost = MasterGridArray[i, b].Contents.Cost;
+                }
 
-            Closed.Add(Target);
-            HCost = 0;
+            }
         }
     }
 
-    public void GenerateIntergationField(Vector2Int StartPos)
+    public void GenerateIntergationField(Vector2Int StartPos,string Key,bool Update)
     {
 
         var GC = Services.Resolve<GridController>();
-        var GridArray = GC.GetFromStorage<GridCell<PathfindingInfo>[,]>("Battle");
+        var GridArray = GC.GetFromStorage<GridCell<PathfindingInfo>[,]>(Key);
 
         GridCell<PathfindingInfo> Target = GridArray[StartPos.x,StartPos.y];
 
@@ -162,50 +148,69 @@ public class FlowField : MonoService<FlowField>
             }
         }
 
-        UpdateText(Vector2Int.zero);
-    }
-
-    public void UpdateText(Vector2Int StartPos)
-    {
-
-        var GC = Services.Resolve<GridController>();
-
-        var GridArray = GC.GetFromStorage<GridCell<PathfindingInfo>[,]>("Battle");
-
-        Queue<GridCell<PathfindingInfo>> Open = new Queue<GridCell<PathfindingInfo>>();
-        HashSet<GridCell<PathfindingInfo>> Closed = new HashSet<GridCell<PathfindingInfo>>();
-
-        Open.Enqueue(GridArray[StartPos.x, StartPos.y]);
-
-        GridCell<PathfindingInfo> Target;
-
-        while (Open.Count != 0)
+        
+        if (Update)
         {
-
-            Target = Open.Dequeue();          
-            Target.Contents.LinkedObject.GetComponentInChildren<TextMeshPro>().text = Target.Contents.BestCost.ToString();
-            //Target.Contents.LinkedObject.GetComponent<Renderer>().material.color = Color.red;
-
-            for (int i = 0; i < Target.DirectionalNeighboursList.Count; i++)
-            {
-                if (!Closed.Contains(Target.DirectionalNeighboursList[i]))
-                {
-                    if (!Open.Contains(Target.DirectionalNeighboursList[i]))
-                    {                      
-                        Open.Enqueue(Target.DirectionalNeighboursList[i]);
-                    };
-                }
-            }
-
-            Closed.Add(Target);        
+            UpdateText(Key);
         }
     }
 
-    public void ResetBest()
+    public void UpdateText(string Key)
+    {
+
+        //var GC = Services.Resolve<GridController>();
+
+        //var GridArray = GC.GetFromStorage<GridCell<PathfindingInfo>[,]>("Battle");
+
+        //Queue<GridCell<PathfindingInfo>> Open = new Queue<GridCell<PathfindingInfo>>();
+        //HashSet<GridCell<PathfindingInfo>> Closed = new HashSet<GridCell<PathfindingInfo>>();
+
+        //Open.Enqueue(GridArray[StartPos.x, StartPos.y]);
+
+        //GridCell<PathfindingInfo> Target;
+
+        //while (Open.Count != 0)
+        //{
+
+        //    Target = Open.Dequeue();          
+        //    Target.Contents.LinkedObject.GetComponentInChildren<TextMeshPro>().text = Target.Contents.BestCost.ToString();
+        //    //Target.Contents.LinkedObject.GetComponent<Renderer>().material.color = Color.red;
+
+        //    for (int i = 0; i < Target.DirectionalNeighboursList.Count; i++)
+        //    {
+        //        if (!Closed.Contains(Target.DirectionalNeighboursList[i]))
+        //        {
+        //            if (!Open.Contains(Target.DirectionalNeighboursList[i]))
+        //            {                      
+        //                Open.Enqueue(Target.DirectionalNeighboursList[i]);
+        //            };
+        //        }
+        //    }
+
+        //    Closed.Add(Target);        
+        //}
+
+        var GC = Services.Resolve<GridController>();
+
+        var GridArray = GC.GetFromStorage<GridCell<PathfindingInfo>[,]>(Key);
+        var MasterGridArray = GC.GetFromStorage<GridCell<PathfindingInfo>[,]>("Battle");
+        //var BattleInfo = GC.GetFromStorage<GridCell<UnitMapData>[,]>("BattleInfo");
+
+
+        for (int i = 0; i < GridArray.GetLength(0); i++)
+        {
+            for (int b = 0; b < GridArray.GetLength(1); b++)
+            {
+                MasterGridArray[i,b].Contents.LinkedObject.GetComponentInChildren<TextMeshPro>().text = GridArray[i,b].Contents.BestCost.ToString();
+            }
+        }
+    }
+
+    public void ResetBest(string Key)
     {
         var GC = Services.Resolve<GridController>();
 
-        var GridArray = GC.GetFromStorage<GridCell<PathfindingInfo>[,]>("Battle");
+        var GridArray = GC.GetFromStorage<GridCell<PathfindingInfo>[,]>(Key);
 
         foreach (var item in GridArray)
         {

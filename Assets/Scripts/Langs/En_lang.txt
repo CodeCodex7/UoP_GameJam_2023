@@ -1,9 +1,24 @@
-[TEST],This is a Test 1,This is a Test 1,This is a Test 1
-[START],Start,,
-[OPTIONS],Options,,
-[EXIT],Exit,,
-[RESTART],Restart,,
-[LANG],Language,Idioma,Sprache
-[NAME],Battle of Bangal,Batalla de Bangal,Schlacht von Bangal
-[GAMEJAM],Game Jam,Atasco de juegos,Spiel Konfitüre
-[MACHINE TRANSLATED],Languages are machine translated,Los idiomas se traducen automáticamente,Sprachen werden maschinell übersetzt
+[TEST],This is a Test 1
+[START],Start
+[OPTIONS],Options
+[EXIT],Exit
+[RESTART],Restart
+[LANG],Language
+[NAME],Battle of Bangal
+[GAMEJAM],Game Jam
+[MACHINETRANSLATED],Languages are machine translated
+[AUTOBATTLE],Auto Battle
+[MONEY:],Pounds
+[BLUE_ALIVE],Blue Alive
+[RED_ALIVE],Red Alive
+[FIGHT],Begin Battle
+[SOILDER],Fighter
+[GAMESETTINGS],Battle Settings
+[ARCHER],Archer
+[GAINT],Giant
+[LOSE],Lose
+[WIN],Win
+[GAMEINFO],Selected unit to go into battle with use the buttons to add units use the remove button to remove the last added unit. You are red team.
+[AI_WIN],AI Wins
+[PLAYER_WIN],Player Wins
+[REMOVE],Remove Unit

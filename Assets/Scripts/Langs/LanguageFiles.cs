@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum SuppportedLangs { En, Es, De };
+public enum SuppportedLangs { En, Es, De ,Bn };
 
 [CreateAssetMenu(fileName = "LangFiles", menuName = "LanguagesFiles", order = 1)]
 public class LanguageFiles : ScriptableObject

@@ -1,5 +1,24 @@
 [TEST],This is a Test 1
-[TEST1],This is a Test 2
-[TEST2],This is a Test 3
-[TEST3],This is a Test 4
+[START],Comenzar
+[OPTIONS],Opciones
+[EXIT],Salida
+[RESTART],Reanudar
+[LANG],Idioma
 [NAME],Batalla de Bangal
+[GAMEJAM],Atasco de juegos
+[MACHINETRANSLATED],Los idiomas se traducen automáticamente
+[AUTOBATTLE],Batalla automática
+[MONEY:],Libras
+[BLUE_ALIVE],Azul vivo
+[RED_ALIVE],Rojo vivo
+[FIGHT],Comienza la batalla
+[SOILDER],Luchadora
+[GAMESETTINGS],Configuración de batalla
+[ARCHER],Arquera
+[GAINT],Giganta
+[LOSE],perder
+[WIN],ganar
+[GAMEINFO],Unidad seleccionada para ir a la batalla con usa los botones para agregar unidades Usa el botón Eliminar para eliminar la última unidad agregada. Eres un equipo rojo.
+[AI_WIN],La IA gana
+[PLAYER_WIN],Jugadora ganadora
+[REMOVE],Quitar unidad

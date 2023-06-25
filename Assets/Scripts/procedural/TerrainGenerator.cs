@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
-
+using System;
 public class TerrainGenerator : MonoService<TerrainGenerator>
 {
 
@@ -11,6 +11,9 @@ public class TerrainGenerator : MonoService<TerrainGenerator>
 
     public GameObject TerrainBlock;
     public GameObject TestAI;
+
+    TerrainData Data;
+
     private void Awake()
     {
         RegisterService();
@@ -23,9 +26,9 @@ public class TerrainGenerator : MonoService<TerrainGenerator>
     }
 
 
-    void GenerateTerrain(Vector3 postion,Vector2Int MapSize)
+    public void GenerateTerrain(Vector3 postion,Vector2Int MapSize)
     {
-        TerrainData Data = new TerrainData();
+        Data = new TerrainData();
         Data.RootObject = Instantiate<GameObject>(new GameObject("Root"),postion,Quaternion.identity);
 
         var Perlin = Services.Resolve<PerlinGenerator>();
@@ -36,12 +39,9 @@ public class TerrainGenerator : MonoService<TerrainGenerator>
         var GridService = Services.Resolve<GridController>();
         
         GridService.CreateGrid<PathfindingInfo>(MapSize, "Battle");
-        GridService.CreateGrid<bool>(MapSize, "Col");
-        GridService.CreateGrid<int>(MapSize, "Bol");
         GridService.CreateGrid<UnitMapData>(MapSize, "BattleInfo");
 
         var GridArray = GridService.GetFromStorage<GridCell<PathfindingInfo>[,]>("Battle");
-        var ColArray = GridService.GetFromStorage<GridCell<bool>[,]>("Col");
         var BattleArea = GridService.GetFromStorage<GridCell<PathfindingInfo>[,]>("BattleInfo");
         
         //Debug.Log(BattleArea[0, 0].Contents.Occuipied);
@@ -53,14 +53,14 @@ public class TerrainGenerator : MonoService<TerrainGenerator>
                 
                 var A = Instantiate(TerrainBlock, new Vector3(i, BaseTerrain[i, b] * 5f, b), Quaternion.identity,Data.RootObject.transform);
 
-                A.GetComponentInChildren<TextMeshPro>().text = string.Format("{0} {1}", i, b);
+                //A.GetComponentInChildren<TextMeshPro>().text = string.Format("{0} {1}", i, b);
 
                 GridArray[i, b].Contents.GridPostion = new Vector2Int(i, b);
                 GridArray[i, b].Contents.WorldPostion = A.transform.position;
 
                 if(BaseTerrain[i, b] <0.2f)
                 {
-                    GridArray[i, b].Contents.Cost = 255;
+                    GridArray[i, b].Contents.Cost =255;
                 }
                 else if(BaseTerrain[i, b] > 0.5f)
                 {
@@ -77,41 +77,13 @@ public class TerrainGenerator : MonoService<TerrainGenerator>
             }
         }
 
+        //StartCoroutine(AnimatedGenerateTerrain());
+
     }
 
-    IEnumerator AnimatedGenerateTerrain(Vector3 postion, Vector2Int MapSize)
+    public void DestoryTerrain()
     {
-
-        TerrainData Data = new TerrainData();
-        Data.RootObject = Instantiate<GameObject>(new GameObject("Root"), postion, Quaternion.identity);
-
-        var Perlin = Services.Resolve<PerlinGenerator>();
-
-        var BaseTerrain = Perlin.GenerateNoiseMap(MapSize);
-        var River = Perlin.GenerateNoiseMap(MapSize);
-        var Hills = Perlin.GenerateNoiseMap(MapSize);
-
-        int Skipcalulated= MapSize.x + MapSize.y / 3;
-        int SkipCounter = 0;
-
-        for (int i = 0; i < MapSize.x; i++)
-        {
-            for (int b = 0; b < MapSize.y; b++)
-            {
-                SkipCounter++;
-                if(SkipCounter > Skipcalulated)
-                {
-                    yield return new WaitForEndOfFrame();
-                    SkipCounter = 0;
-                }
-                var A = Instantiate(TerrainBlock, new Vector3(i, BaseTerrain[i, b] * 5f, b), Quaternion.identity, Data.RootObject.transform);
-                A.GetComponent<Renderer>().material.color = TerrainColor(BaseTerrain[i, b]);
-                Data.TerrainBlocks.Add(A);
-
-                A.name = string.Format("Block: X {0} | y{1}", i, b);
-            }
-        }
-        
+        Destroy(Data.RootObject);
     }
 
     Color TerrainColor(float H)
@@ -124,7 +96,8 @@ public class TerrainGenerator : MonoService<TerrainGenerator>
 
         if(H > 0.2f)
         {
-            return new Color(0, Mathf.Clamp(H, 0.2f, 1f), 0);
+            return new Color(Mathf.Clamp(H, 0.2f, 1f), Mathf.Clamp(H, 0.2f, 1f), 0);
+            //return new Color(0, Mathf.Clamp(H, 0.2f, 1f), 0);
         }
         else
         {
@@ -153,34 +126,12 @@ public class TerrainGenerator : MonoService<TerrainGenerator>
   
     void Start()
     {
-        GenerateTerrain(Vector3.zero, new Vector2Int(100, 100));
+        //GenerateTerrain(Vector3.zero, new Vector2Int(Services.Resolve<GameManager>().MapSize.x, Services.Resolve<GameManager>().MapSize.y));
 
-        Services.Resolve<FlowField>().GenerateIntergationField(new Vector2Int(25, 25));
-
-        for (int i = 0; i < 1; i++)
-        {
-            var AI = Instantiate(TestAI);
-            //AI.GetComponent<TestFlowAI>().StartCoroutine(AI.GetComponent<BasicAI>().FreeSeek("Battle", new Vector2Int(Random.Range(0, 99), Random.Range(0, 99))));
-            //AI.GetComponent<TestFlowAI>().StartCoroutine(AI.GetComponent<BasicAI>().FreeSeek("Battle", new Vector2Int(Random.Range(0, 99), Random.Range(0, 99))));
-            AI.GetComponent<BasicAI>();
-        }
-      
-        //StartCoroutine(FlowChange());
-
+        //Services.Resolve<BattleController>().Battle(20,20);
+        
     }
 
-
-    IEnumerator FlowChange()
-    {
-
-        while(true) 
-        {
-            Services.Resolve<FlowField>().ResetBest();
-            Services.Resolve<FlowField>().GenerateIntergationField(new Vector2Int(Random.Range(0,49),Random.Range(0,49)));
-            yield return new WaitForSeconds(10f);
-        }
-
-    }
 
 
     IEnumerator TestFlood()
